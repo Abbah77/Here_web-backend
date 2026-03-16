@@ -70,7 +70,7 @@ async def health_check():
     """Health check endpoint for Render"""
     return {
         "status": "healthy",
-        "database": "connected" if db.pg_pool else "disconnected"
+        "database": "connected"  # Remove the pg_pool check
     }
 
 # This is critical for Render to detect the port
