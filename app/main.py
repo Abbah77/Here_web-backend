@@ -1,8 +1,8 @@
 # app/main.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 import logging
+import uvicorn
 
 from app.config import settings
 from app.database import db
@@ -24,7 +24,7 @@ app = FastAPI(
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.get_allowed_origins_list,  # Use the property here
+    allow_origins=settings.get_allowed_origins_list,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -58,6 +58,7 @@ async def shutdown():
 
 @app.get("/")
 async def root():
+    """Root endpoint"""
     return {
         "message": "Welcome to HERE Social API",
         "version": "1.0.0",
@@ -71,3 +72,12 @@ async def health_check():
         "status": "healthy",
         "database": "connected" if db.pg_pool else "disconnected"
     }
+
+# This is critical for Render to detect the port
+if __name__ == "__main__":
+    uvicorn.run(
+        "app.main:app",
+        host="0.0.0.0",
+        port=settings.PORT,
+        reload=False  # Set to False for production
+    )
