@@ -16,3 +16,4 @@ celery==5.3.4
 pillow==10.1.0
 boto3==1.34.0
 python-magic==0.4.27
+email-validator==2.1.0          # ← ADD THIS LINE
