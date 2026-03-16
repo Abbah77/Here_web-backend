@@ -5,7 +5,6 @@ import os
 from datetime import datetime
 from PIL import Image
 import io
-import magic
 from typing import Optional, Tuple
 import logging
 
@@ -110,6 +109,7 @@ class StorageService:
             logger.error(f"Thumbnail generation failed: {e}")
             return None
 
+    # 🔴 THIS IS THE MISSING FUNCTION 🔴
     async def upload_file(
         self, 
         file: UploadFile, 
@@ -227,3 +227,13 @@ class StorageService:
 
 # Create global instance
 storage_service = StorageService()
+
+# 🔴 EXPOSE THE FUNCTION FOR DIRECT IMPORT 🔴
+# This allows: from app.services.storage import upload_file
+async def upload_file(file: UploadFile, folder: str = "general", compress: bool = True, generate_thumbnail: bool = False) -> dict:
+    """Convenience function for uploading files"""
+    return await storage_service.upload_file(file, folder, compress, generate_thumbnail)
+
+async def delete_file(file_url: str) -> bool:
+    """Convenience function for deleting files"""
+    return await storage_service.delete_file(file_url)
