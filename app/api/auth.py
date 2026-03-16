@@ -1,11 +1,11 @@
 # app/api/auth.py
-from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from pydantic import BaseModel, EmailStr
-from datetime import datetime
+from datetime import datetime, timedelta
 import uuid
 
 from app.database import db
-from app.utils.auth import create_access_token
+from app.utils.auth import get_current_user, create_access_token  # ← ADD THIS LINE
 
 router = APIRouter()
 
