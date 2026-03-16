@@ -16,10 +16,10 @@ class PushNotificationService:
     """Push notification service"""
     
     def __init__(self):
-        self.web_push_vapid_key = settings.VAPID_PUBLIC_KEY if hasattr(settings, 'VAPID_PUBLIC_KEY') else None
-        self.fcm_server_key = settings.FCM_SERVER_KEY if hasattr(settings, 'FCM_SERVER_KEY') else None
-        self.one_signal_app_id = settings.ONE_SIGNAL_APP_ID if hasattr(settings, 'ONE_SIGNAL_APP_ID') else None
-        self.one_signal_api_key = settings.ONE_SIGNAL_API_KEY if hasattr(settings, 'ONE_SIGNAL_API_KEY') else None
+        self.web_push_vapid_key = getattr(settings, 'VAPID_PUBLIC_KEY', None)
+        self.fcm_server_key = getattr(settings, 'FCM_SERVER_KEY', None)
+        self.one_signal_app_id = getattr(settings, 'ONE_SIGNAL_APP_ID', None)
+        self.one_signal_api_key = getattr(settings, 'ONE_SIGNAL_API_KEY', None)
 
     async def send_push_notification(
         self,
@@ -153,4 +153,32 @@ class PushNotificationService:
                     "contents": {"en": body},
                     "data": data or {},
                     "large_icon": icon,
-                    "android_
+                    "android_channel_id": subscription.get("android_channel_id"),
+                    "small_icon": "ic_notification"
+                }
+            )
+            
+            if response.status_code != 200:
+                logger.error(f"OneSignal push failed: {response.text}")
+                response.raise_for_status()
+
+    async def get_user_subscriptions(self, user_id: str) -> List[Dict]:
+        """Get push notification subscriptions for a user"""
+        # This would query your database for the user's push subscriptions
+        # For now, return empty list
+        return []
+
+    async def save_subscription(self, user_id: str, subscription: Dict):
+        """Save a push notification subscription"""
+        # This would save to your database
+        logger.info(f"Saving subscription for user {user_id}")
+        pass
+
+    async def remove_subscription(self, user_id: str, endpoint: str):
+        """Remove a push notification subscription"""
+        # This would remove from your database
+        logger.info(f"Removing subscription for user {user_id}")
+        pass
+
+# Create global instance
+push_service = PushNotificationService()
